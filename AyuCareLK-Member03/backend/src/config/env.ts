@@ -5,6 +5,7 @@ export interface AppEnv {
   JWT_ACCESS_SECRET: string;
   JWT_ACCESS_TTL_SECONDS: number;
   SWAGGER_PATH: string;
+  DATABASE_URL: string;
 }
 
 export function validateEnv(input: Record<string, unknown>): AppEnv {
@@ -24,5 +25,7 @@ export function validateEnv(input: Record<string, unknown>): AppEnv {
   })) throw new Error('FRONTEND_ORIGINS must contain exact http(s) origins');
   const SWAGGER_PATH = String(input.SWAGGER_PATH ?? 'api/docs').replace(/^\/+|\/+$/g, '');
   if (!SWAGGER_PATH || SWAGGER_PATH.includes('..')) throw new Error('Invalid SWAGGER_PATH');
-  return { NODE_ENV: NODE_ENV as AppEnv['NODE_ENV'], PORT, FRONTEND_ORIGINS: origins.join(','), JWT_ACCESS_SECRET, JWT_ACCESS_TTL_SECONDS, SWAGGER_PATH };
+  const DATABASE_URL = String(input.DATABASE_URL ?? '');
+  if (!/^postgres(ql)?:\/\//.test(DATABASE_URL)) throw new Error('Set a PostgreSQL DATABASE_URL');
+  return { NODE_ENV: NODE_ENV as AppEnv['NODE_ENV'], PORT, FRONTEND_ORIGINS: origins.join(','), JWT_ACCESS_SECRET, JWT_ACCESS_TTL_SECONDS, SWAGGER_PATH, DATABASE_URL };
 }
