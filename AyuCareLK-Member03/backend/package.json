@@ -1,76 +1,85 @@
 {
-    "name": "ayucare-backend",
-    "version": "0.1.0",
-    "private": true,
-    "scripts": {
-        "dev": "node --watch -r ts-node/register src/main.ts",
-        "start:dev": "npm run dev",
-        "start": "node dist/main.js",
-        "build": "tsc -p tsconfig.build.json",
-        "typecheck": "tsc --noEmit",
-        "lint": "eslint .",
-        "test": "jest --runInBand"
+  "name": "ayucare-backend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "prisma generate && node --watch -r ts-node/register src/main.ts",
+    "start:dev": "npm run dev",
+    "start": "node dist/main.js",
+    "build": "prisma generate && tsc -p tsconfig.build.json",
+    "typecheck": "prisma generate && tsc --noEmit",
+    "lint": "eslint .",
+    "test": "prisma generate && jest --runInBand",
+    "db:validate": "prisma validate",
+    "db:generate": "prisma generate",
+    "db:status": "prisma migrate status",
+    "db:check": "prisma generate && tsx scripts/check-db.ts",
+    "db:seed:dev": "prisma generate && tsx scripts/seed-dev-staff.ts",
+    "db:verify-auth": "prisma generate && node -r ts-node/register scripts/verify-dev-auth.ts",
+    "db:verify-patients": "prisma generate && node -r ts-node/register scripts/verify-patients-db.ts"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.1.25",
+    "@nestjs/config": "^4.0.1",
+    "@nestjs/core": "^11.1.25",
+    "@nestjs/jwt": "^11.0.0",
+    "@nestjs/passport": "^11.0.0",
+    "@nestjs/platform-express": "^11.1.25",
+    "@nestjs/swagger": "^11.0.0",
+    "@prisma/adapter-pg": "7.10.1",
+    "@prisma/client": "7.10.1",
+    "argon2": "^0.45.2",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
+    "dotenv": "18.0.9",
+    "helmet": "^8.1.0",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "pg": "8.23.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2"
+  },
+  "devDependencies": {
+    "@nestjs/testing": "^11.1.25",
+    "@types/express": "^5.0.0",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.0.0",
+    "@types/passport-jwt": "^4.0.1",
+    "@types/pg": "8.23.1",
+    "@types/supertest": "^6.0.0",
+    "eslint": "^9.0.0",
+    "jest": "^30.0.0",
+    "prisma": "7.10.1",
+    "supertest": "^7.0.0",
+    "ts-jest": "^29.0.0",
+    "ts-node": "10.9.2",
+    "tsx": "^4.0.0",
+    "typescript": "^5.9.0",
+    "typescript-eslint": "^8.0.0"
+  },
+  "overrides": {
+    "multer": "^2.5.0",
+    "js-yaml": "^5.5.0"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": ".",
+    "setupFiles": [
+      "<rootDir>/test/setup.ts"
+    ],
+    "testRegex": ".*\\.spec\\.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": [
+        "ts-jest",
+        {
+          "tsconfig": "tsconfig.json"
+        }
+      ]
     },
-    "dependencies": {
-        "@nestjs/common": "^11.1.25",
-        "@nestjs/config": "^4.0.1",
-        "@nestjs/core": "^11.1.25",
-        "@nestjs/jwt": "^11.0.0",
-        "@nestjs/passport": "^11.0.0",
-        "@nestjs/platform-express": "^11.1.25",
-        "@nestjs/swagger": "^11.0.0",
-        "@prisma/adapter-pg": "7.10.1",
-        "@prisma/client": "7.10.1",
-        "argon2": "^0.45.2",
-        "class-transformer": "^0.5.1",
-        "class-validator": "^0.14.2",
-        "dotenv": "18.0.9",
-        "helmet": "^8.1.0",
-        "passport": "^0.7.0",
-        "passport-jwt": "^4.0.1",
-        "pg": "8.23.1",
-        "reflect-metadata": "^0.2.2",
-        "rxjs": "^7.8.2"
-    },
-    "devDependencies": {
-        "@nestjs/testing": "^11.1.25",
-        "@types/express": "^5.0.0",
-        "@types/jest": "^30.0.0",
-        "@types/node": "^24.0.0",
-        "@types/passport-jwt": "^4.0.1",
-        "@types/supertest": "^6.0.0",
-        "eslint": "^9.0.0",
-        "jest": "^30.0.0",
-        "prisma": "7.10.1",
-        "supertest": "^7.0.0",
-        "ts-jest": "^29.0.0",
-        "ts-node": "10.9.2",
-        "typescript": "^5.9.0",
-        "typescript-eslint": "^8.0.0"
-    },
-    "overrides": {
-        "multer": "^2.5.0",
-        "js-yaml": "^5.5.0"
-    },
-    "jest": {
-        "moduleFileExtensions": [
-            "js",
-            "json",
-            "ts"
-        ],
-        "rootDir": ".",
-        "setupFiles": [
-            "<rootDir>/test/setup.ts"
-        ],
-        "testRegex": ".*\\.spec\\.ts$",
-        "transform": {
-            "^.+\\.(t|j)s$": [
-                "ts-jest",
-                {
-                    "tsconfig": "tsconfig.json"
-                }
-            ]
-        },
-        "testEnvironment": "node"
-    }
+    "testEnvironment": "node"
+  }
 }

@@ -7,9 +7,11 @@ import { RolesGuard } from './auth/roles.guard';
 import { RequestLoggingMiddleware } from './common/request-logging.middleware';
 import { validateEnv } from './config/env';
 import { HealthController } from './health/health.controller';
+import { PrismaModule } from './prisma/prisma.module';
+import { PatientsModule } from './patients/patients.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true, validate: validateEnv }), AuthModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true, validate: validateEnv }), PrismaModule, AuthModule, PatientsModule],
   controllers: [HealthController],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },
