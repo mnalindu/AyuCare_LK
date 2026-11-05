@@ -1,0 +1,55 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Keep these values aligned with src/auth/roles.ts.
+enum StaffRole {
+  SUPER_ADMIN
+  CLINIC_ADMIN
+  DOCTOR
+  RECEPTIONIST
+  PHARMACIST
+  CASHIER
+}
+
+// Staff authentication records. Never store plaintext passwords here.
+model User {
+  id           String    @id @default(uuid()) @db.Uuid
+  email        String    @unique @db.VarChar(254)
+  passwordHash String    @map("password_hash") @db.VarChar(255)
+  role         StaffRole
+  isActive     Boolean   @default(true) @map("is_active")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  registeredPatients Patient[]
+
+  @@map("staff_users")
+}
+
+// Patient-facing numbers are unique and stable; UUIDs remain the internal key.
+// Contact fields are optional because patients may share a phone or lack email.
+model Patient {
+  id             String    @id @default(uuid()) @db.Uuid
+  patientNumber  Int       @unique @default(autoincrement()) @map("patient_number")
+  fullName       String    @map("full_name") @db.VarChar(200)
+  dateOfBirth    DateTime? @map("date_of_birth") @db.Date
+  phone          String?   @db.VarChar(32)
+  email          String?   @db.VarChar(254)
+  address        String?   @db.Text
+  isActive       Boolean   @default(true) @map("is_active")
+  registeredById String?   @map("registered_by_id") @db.Uuid
+  registeredBy   User?     @relation(fields: [registeredById], references: [id], onDelete: SetNull)
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  @@index([fullName])
+  @@index([phone])
+  @@index([registeredById])
+  @@map("patients")
+}
