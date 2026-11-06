@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --navy-950: #0B1729;
+    --navy-800: #20354F;
+    --teal-700: #0B6D77;
+    --teal-50: #E9F8F7;
+    --bg-canvas: #F6F8FB;
+    --border-subtle: #E2E8F0;
+    --text-strong: #14253A;
+    --text-muted: #526176;
+    --surface: #FFFFFF;
+    --success: #167347;
+    --success-bg: #E9F7EE;
+    --warning: #A15C07;
+    --warning-bg: #FFF5E2;
+    --danger: #B42318;
+    --danger-bg: #FFF0EE;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: #F6F8FB;
+    color: #14253A;
+    font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Accessibility focus ring standard */
+  :focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #0B6D77;
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Subtle scrollbars for tabular layouts */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #E2E8F0;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #CBD5E1;
+}
+

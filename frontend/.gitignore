@@ -1,0 +1,11 @@
+# AyuCare frontend-only generated outputs and secrets
+node_modules/
+.next/
+coverage/
+playwright-report/
+test-results/
+*.tsbuildinfo
+*.log
+.env
+.env.*
+!.env.example
