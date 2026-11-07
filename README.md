@@ -119,54 +119,57 @@ Create a **development-only** database named `ayucare_db` in pgAdmin or PostgreS
 
 ### 3. Backend environment
 
-Create `backend/.env` from the project's existing `.env.example` if present. An **illustrative** configuration is:
+The backend is currently in `AyuCareLK-Member03/backend/`. Copy its `.env.example` to `.env` and set your local database credentials and a unique JWT secret:
 
 ```dotenv
+NODE_ENV=development
 PORT=3001
-DATABASE_URL="postgresql://postgres:YOUR_PASSWORD@localhost:5432/ayucare_db?schema=public"
-JWT_SECRET="REPLACE_WITH_A_LONG_RANDOM_LOCAL_SECRET"
+FRONTEND_ORIGINS=http://localhost:3000
+DATABASE_URL=postgresql://YOUR_USER:YOUR_PASSWORD@localhost:5432/ayucare_db?schema=public
+JWT_ACCESS_SECRET=YOUR_RANDOM_SECRET_OF_AT_LEAST_32_CHARACTERS
 ```
 
-Use the exact environment-variable names expected by the current code. Special characters in the database password must be URL-encoded in a connection URL. Do not commit `.env`.
+In PowerShell, run `Copy-Item .env.example .env` from the backend folder, then edit `.env`. URL-encode special characters in the database password. The backend validates these settings at startup. Do not commit `.env`.
 
 ### 4. Install backend dependencies and prepare the database
 
-Run these commands from the `backend/` directory:
+Run these commands from `AyuCareLK-Member03/backend/`:
 
-```bash
-cd backend
-npm install
-npx prisma validate
-npx prisma generate
+```powershell
+cd AyuCareLK-Member03/backend
+npm ci
+npm run db:validate
+npm run db:status
+npm run db:generate
 ```
 
-When database configuration and migrations have been reviewed, apply the existing development migrations using the commands appropriate for the installed Prisma version (commonly `npx prisma migrate dev`). **Do not approve a database reset** unless you understand and intend its data loss. Seed synthetic staff accounts only if the project provides a verified development seed command.
+If `db:status` reports pending migrations, review the existing database and migration SQL before applying them with `npx prisma migrate deploy`. Do not reset an existing database. To log in, configure a synthetic development staff account as described in the [backend README](./AyuCareLK-Member03/backend/README.md) and run `npm run db:seed:dev`.
 
 Then start the backend:
 
-```bash
+```powershell
 npm run start:dev
 ```
 
-The example backend base URL is `http://localhost:3001/api/v1`. The real port and API prefix depend on the existing NestJS configuration.
+The backend health endpoint is `http://localhost:3001/api/v1/health` and Swagger is at `http://localhost:3001/api/docs` in development.
 
 ### 5. Frontend environment and startup
 
-If `frontend/` has been initialized, configure its API base URL as required by the frontend implementation (for example, in `frontend/.env.local`, if supported):
+The frontend defaults to `http://localhost:3001/api/v1`. If the backend runs at another address, copy `frontend/.env.example` to `frontend/.env.local` and set:
 
 ```dotenv
-NEXT_PUBLIC_API_BASE_URL="http://localhost:3001/api/v1"
+BACKEND_API_URL=http://localhost:3001/api/v1
 ```
 
-Then run:
+In a second terminal, from the repository root, run:
 
-```bash
+```powershell
 cd frontend
-npm install
+npm ci
 npm run dev
 ```
 
-A typical frontend development URL is `http://localhost:3000`. Environment names, scripts, and ports must be checked against the actual code.
+Open `http://localhost:3000`. For checks, run `npm run typecheck`, `npm run lint`, `npm test`, and `npm run build` separately in each application folder. A successful build does not verify database-backed login and patient flows; test those after configuring the local database.
 
 ## Sprint 01 API contract (target)
 
